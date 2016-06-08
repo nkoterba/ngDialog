@@ -50,7 +50,7 @@
 
 .ngdialog {
   position: fixed;
-  overflow: auto;
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 10000;
   top: 0;
@@ -94,6 +94,13 @@
   -webkit-animation: ngdialog-fadein 0.5s;
   animation: ngdialog-fadein 0.5s;
   pointer-events: all;
+}
+
+.ngdialog-header {
+    height: 32px;
+    margin: -16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .ngdialog.ngdialog-closing .ngdialog-content {
