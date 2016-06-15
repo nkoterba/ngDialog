@@ -71,7 +71,8 @@
             showMinimize           : false,
             minimizedTitle         : 'none titled',
             top                    : null,
-            bottom                 : null
+            bottom                 : null,
+            resizable              : false
         };
 
         this.setForceHtmlReload = function (_useIt) {
@@ -127,8 +128,8 @@
                         if (options.trapFocus) {
                             $dialog.on('keydown', privateMethods.onTrapFocusKeydown);
 
-                            // Catch rogue changes (eg. after unfocusing everything by clicking
-                            // a non-focusable element)
+                            // Catch rogue changes (eg. after unfocusing everything by
+                            // clicking a non-focusable element)
                             $elements.body.on('keydown', privateMethods.onTrapFocusKeydown);
                         }
                     },
@@ -406,8 +407,8 @@
                             return null;
                         }
 
-                        // TODO: This might be incorrect if there are a mix of open dialogs with
-                        // different 'appendTo' values
+                        // TODO: This might be incorrect if there are a mix of open dialogs
+                        // with different 'appendTo' values
                         return $el(dialogs[dialogs.length - 1]);
                     },
 
@@ -660,14 +661,32 @@
                                         template += '<div class="ngdialog-minimize-btn"></div>';
                                     }
 
-                                    var hasOverlayClass = options.overlay ? '' : ' ngdialog-no-overlay';
-                                    $dialog             = $el('<div id="' + dialogID + '" class="ngdialog' + hasOverlayClass + '"></div>');
+                                    var hasOverlayClass   = options.overlay ? '' : ' ngdialog-no-overlay';
+                                    var hasResizableClass = options.resizable ? ' ngdialog-content-resizable' : '';
+                                    $dialog               = $el('<div id="' + dialogID + '" class="ngdialog' + hasOverlayClass + '"></div>');
 
                                     // If showing overlay, Add the overlay HTML
                                     var html = options.overlay ? '<div class="ngdialog-overlay"></div>' : '';
 
                                     // Add the content HTML
-                                    html += '<div class="ngdialog-content" role="document">'
+                                    html += '<div class="ngdialog-content' + hasResizableClass + '" role="document">'
+
+                                    if (options.resizable) {
+                                        html += '<div class="ngdialog-content-resize-top"></div>';
+                                        html += '<div' +
+                                            ' class="ngdialog-content-resize-bottom"></div>';
+                                        html += '<div class="ngdialog-content-resize-left"></div>';
+                                        html += '<div class="ngdialog-content-resize-right"></div>';
+
+                                        html += '<div' +
+                                            ' class="ngdialog-content-resize-top-right"></div>';
+                                        html += '<div' +
+                                            ' class="ngdialog-content-resize-top-left"></div>';
+                                        html += '<div' +
+                                            ' class="ngdialog-content-resize-bottom-right"></div>';
+                                        html += '<div' +
+                                            ' class="ngdialog-content-resize-bottom-left"></div>';
+                                    }
 
                                     // If dragging, Add the Header HTML
                                     html += options.draggable ? '<div' +
@@ -684,7 +703,8 @@
                                     scope.ngDialogId = dialogID;
 
                                     if (options.data && angular.isString(options.data)) {
-                                        var firstLetter               = options.data.replace(/^\s*/, '')[0];
+                                        var firstLetter               = options.data.replace(/^\s*/,
+                                            '')[0];
                                         scope.ngDialogData            = (firstLetter === '{' || firstLetter === '[') ? angular.fromJson(
                                             options.data) : new String(options.data);
                                         scope.ngDialogData.ngDialogId = dialogID;
@@ -702,7 +722,8 @@
                                     }
 
                                     if (options.width) {
-                                        var $dialogContent = $dialog[0].querySelector('.ngdialog-content');
+                                        var $dialogContent = $dialog[0].querySelector(
+                                            '.ngdialog-content');
                                         if (angular.isString(options.width)) {
                                             $dialogContent.style.width = options.width;
                                         } else {
@@ -715,7 +736,8 @@
                                     }
 
                                     if (options.appendTo && angular.isString(options.appendTo)) {
-                                        $dialogParent = angular.element(document.querySelector(options.appendTo));
+                                        $dialogParent = angular.element(document.querySelector(
+                                            options.appendTo));
                                     } else {
                                         $dialogParent = $elements.body;
                                     }
@@ -733,14 +755,16 @@
                                                     preCloseCallback = scope[options.preCloseCallback];
                                                 } else if (scope.$parent && angular.isFunction(scope.$parent[options.preCloseCallback])) {
                                                     preCloseCallback = scope.$parent[options.preCloseCallback];
-                                                } else if ($rootScope && angular.isFunction($rootScope[options.preCloseCallback])) {
+                                                } else if ($rootScope && angular.isFunction(
+                                                        $rootScope[options.preCloseCallback])) {
                                                     preCloseCallback = $rootScope[options.preCloseCallback];
                                                 }
                                             }
                                         }
 
                                         if (preCloseCallback) {
-                                            $dialog.data('$ngDialogPreCloseCallback', preCloseCallback);
+                                            $dialog.data('$ngDialogPreCloseCallback',
+                                                preCloseCallback);
                                         }
                                     }
 
@@ -777,7 +801,8 @@
                                                 });
                                         }
 
-                                        $dialog.data('$ngDialogControllerController', controllerInstance());
+                                        $dialog.data('$ngDialogControllerController',
+                                            controllerInstance());
                                     }
 
                                     $timeout(function () {
@@ -811,7 +836,8 @@
                                     });
 
                                     if (!keydownIsBound) {
-                                        $elements.body.bind('keydown', privateMethods.onDocumentKeydown);
+                                        $elements.body.bind('keydown',
+                                            privateMethods.onDocumentKeydown);
                                         keydownIsBound = true;
                                     }
 
@@ -823,13 +849,15 @@
                                     }
 
                                     if (options.preserveFocus) {
-                                        $dialog.data('$ngDialogPreviousFocus', document.activeElement);
+                                        $dialog.data('$ngDialogPreviousFocus',
+                                            document.activeElement);
                                     }
 
                                     closeByDocumentHandler = function (event) {
                                         var isOverlay     = options.closeByDocument ? $el(event.target).hasClass(
                                             'ngdialog-overlay') : false;
-                                        var isCloseBtn    = $el(event.target).hasClass('ngdialog-close');
+                                        var isCloseBtn    = $el(event.target).hasClass(
+                                            'ngdialog-close');
                                         var isMinimizeBtn = $el(event.target).hasClass(
                                             'ngdialog-minimize-btn');
 
@@ -884,11 +912,13 @@
                                     }
 
                                     if (options.draggable) {
-                                        var dialogContent   = $dialog[0].querySelector('.ngdialog-content');
+                                        var dialogContent   = $dialog[0].querySelector(
+                                            '.ngdialog-content');
                                         var elDialogContent = $el(dialogContent);
 
                                         if (dialogContent !== null) {
-                                            var elHeader = $el($dialog[0].querySelector('.ngdialog-header'));
+                                            var elHeader = $el($dialog[0].querySelector(
+                                                '.ngdialog-header'));
 
                                             elHeader.on('mousedown', function (event) {
                                                     var winClientRect    = $dialog[0].getBoundingClientRect();
@@ -914,7 +944,6 @@
                                                     var startX = event.screenX - x;
                                                     var startY = event.screenY - y;
 
-
                                                     var mousemove = function (ev) {
                                                         y = ev.screenY - startY;
                                                         x = ev.screenX - startX;
@@ -931,7 +960,7 @@
                                                         else if (x < 0)
                                                             x = 0;
 
-                                                        $el(dialogContent).css({
+                                                        elDialogContent.css({
                                                             top : y + 'px',
                                                             left: x + 'px'
                                                         });
@@ -948,6 +977,97 @@
                                                     $document.on('mouseup', mouseup);
                                                 }
                                             );
+                                        }
+                                    }
+
+                                    if (options.resizable) {
+                                        var dialogContent   = $dialog[0].querySelector('.ngdialog-content');
+                                        var elDialogContent = $el(dialogContent);
+
+                                        if (dialogContent !== null) {
+                                            var setupResizeDrag = function (cssSelector, resizeDirection) {
+                                                var element = $el($dialog[0].querySelector(cssSelector));
+                                                element.on('mousedown', function (event) {
+                                                    var winClientRect    = $dialog[0].getBoundingClientRect();
+                                                    var winHeight        = winClientRect.height;
+                                                    var winWidth         = winClientRect.width;
+                                                    var dialogClientRect = dialogContent.getBoundingClientRect();
+                                                    var dialogHeight     = dialogClientRect.height;
+                                                    var dialogWidth      = dialogClientRect.width;
+
+                                                    if (!options.tooltip) {
+                                                        elDialogContent.css({
+                                                            top     : dialogClientRect.top + 'px',
+                                                            left    : dialogClientRect.left + 'px',
+                                                            position: 'absolute'
+                                                        });
+                                                    }
+
+                                                    var x = parseInt(elDialogContent.css('left') || dialogClientRect.left,
+                                                        10);
+                                                    var y = parseInt(elDialogContent.css('top') || dialogClientRect.top,
+                                                        10);
+
+                                                    var mousemove = function (event) {
+                                                        var mouseY = event.pageY > winHeight ? winHeight :
+                                                            event.pageY < 0 ? 0 : event.pageY;
+                                                        var mouseX = event.pageX > winWidth ? winWidth :
+                                                            event.pageX < 0 ? 0 : event.pageX;
+
+                                                        var newDimensions = {};
+
+                                                        if (resizeDirection.indexOf('s') !== -1) {
+                                                            newDimensions.height = mouseY - y + 'px';
+                                                        } else if (resizeDirection.indexOf('n') !== -1) {
+                                                            var height = (y - mouseY) + dialogHeight;
+                                                            newDimensions.height = height + 'px';
+
+                                                            if (y + dialogHeight - mouseY > 36) {
+                                                                newDimensions.top = mouseY + 'px';
+                                                            }
+                                                            else {
+                                                                newDimensions.top = y + dialogHeight - 36 + 'px';
+                                                            }
+                                                        }
+
+                                                        if (resizeDirection.indexOf('e') !== -1) {
+                                                            newDimensions.width = mouseX - x + 'px';
+                                                        } else if (resizeDirection.indexOf('w') !== -1) {
+                                                            var width = (x - mouseX) + dialogWidth;
+                                                            if (width < 36) {
+                                                                width = 36;
+                                                            }
+                                                            newDimensions.width = width + 'px';
+
+                                                            if (x + dialogWidth - mouseX > 36) {
+                                                                newDimensions.left = mouseX + 'px';
+                                                            } else {
+                                                                newDimensions.left = x + dialogWidth - 36 + 'px';
+                                                            }
+                                                        }
+
+
+                                                        elDialogContent.css(newDimensions);
+                                                    };
+
+                                                    var mouseup = function (ev) {
+                                                        $document.unbind('mousemove', mousemove);
+                                                        $document.unbind('mouseup', mouseup);
+                                                    };
+
+                                                    $document.on('mousemove', mousemove);
+                                                    $document.on('mouseup', mouseup);
+                                                });
+                                            };
+
+                                            setupResizeDrag('.ngdialog-content-resize-bottom', 's');
+                                            setupResizeDrag('.ngdialog-content-resize-top', 'n');
+                                            setupResizeDrag('.ngdialog-content-resize-right', 'e');
+                                            setupResizeDrag('.ngdialog-content-resize-left', 'w');
+                                            setupResizeDrag('.ngdialog-content-resize-top-right', 'ne');
+                                            setupResizeDrag('.ngdialog-content-resize-top-left', 'nw');
+                                            setupResizeDrag('.ngdialog-content-resize-bottom-right', 'se');
+                                            setupResizeDrag('.ngdialog-content-resize-bottom-left', 'sw');
                                         }
                                     }
 
@@ -1010,6 +1130,7 @@
                          * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled), default false
                          * - top {Number|String} - Starting top position of dialog relative to browser window; may be String ('10px') or Number (10)
                          * - left {Number|String} - Starting left position of dialog relative to browser window; may be String ('10px') or Number (10)
+                         * - resizable {Boolean} - true to allow users to resize the dialog along its edges
                          * @return {Object} dialog
                          */
                         openConfirm: function (opts) {
@@ -1133,7 +1254,8 @@
                             minimizedElement.append(closeButton);
                             $elements.body.append(minimizedElement);
                             privateMethods.rearrangeMinimizedElements();
-                        },
+                        }
+                        ,
 
                         getOpenDialogs: function () {
                             return openIdStack;
@@ -1200,8 +1322,11 @@
                         mouseEvent      : attrs.ngDialogTooltip === 'false' ? null : e,
                         showMinimized   : attrs.ngDialogShowMinimized === 'false' ? false : (attrs.ngDialogShowMinimized === 'true' ? true : defaults.showMinimized),
                         minimizedTitle  : attrs.ngDialogMinimizedTitle || defaults.minimizedTitle,
-                        top             : attrs.ngDialogTop ? parseInt(attrs.ngDialogTop, 10) : defaults.top,
-                        left            : attrs.ngDialogLeft ? parseInt(attrs.ngDialogLeft, 10) : defaults.bottom
+                        top             : attrs.ngDialogTop ? parseInt(attrs.ngDialogTop,
+                            10) : defaults.top,
+                        left            : attrs.ngDialogLeft ? parseInt(attrs.ngDialogLeft,
+                            10) : defaults.bottom,
+                        resizable       : attrs.ngDialogResizable === 'false' ? false : (attrs.ngDialogResizable === 'true' ? true : defaults.resizable)
                     });
                 });
             }

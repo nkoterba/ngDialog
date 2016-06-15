@@ -103,6 +103,82 @@
     border-top-right-radius: 5px;
 }
 
+.ngdialog-content-resizable {
+    overflow: hidden;
+}
+
+.ngdialog-content-resize-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: ew-resize;
+}
+
+.ngdialog-content-resize-top {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 10px;
+    cursor: ns-resize;
+}
+
+.ngdialog-content-resize-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: ew-resize;
+}
+
+.ngdialog-content-resize-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    cursor: ns-resize;
+}
+
+.ngdialog-content-resize-bottom-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    width: 10px;
+    cursor: nwse-resize;
+}
+
+.ngdialog-content-resize-bottom-left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 10px;
+    width: 10px;
+    cursor: nesw-resize;
+}
+
+.ngdialog-content-resize-top-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 10px;
+    width: 10px;
+    cursor: nesw-resize;
+}
+
+.ngdialog-content-resize-top-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 10px;
+    width: 10px;
+    cursor: nwse-resize;
+}
+
 .ngdialog.ngdialog-closing .ngdialog-content {
   -webkit-backface-visibility: hidden;
   -webkit-animation: ngdialog-fadeout 0.5s;
