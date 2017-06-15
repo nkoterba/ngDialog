@@ -57,7 +57,16 @@
 <a href="#" ng-click="openResizable($event)">Open Resizable</a>
 <a href="#" ng-click="openResizableAsTooltip($event)">Open Resizable tooltip</a>
 <a href="#" ng-click="openDraggable($event)">Open draggable</a>
-<a href="#" ng-click="openDraggableAtCoord($event)">Open draggable at x: 100 y:100</a>
+<a href="#" ng-click="openDraggableAtCoord($event)">Open draggable at x: 100 y: 100</a>
+<a href="#" ng-click="openDraggableAtCoordLeftTrumpRight($event)">Open draggable at x: 100 y:
+    100 (left trumping right)</a>
+<a href="#" ng-click="openDraggableAtCoordRight($event)">Open draggable at right: 100 top: 100</a>
+<a href="#" ng-click="openDraggableAtPixelRight($event)">Open draggable at right: 100px top:
+    100px</a>
+<a href="#" ng-click="openDraggableAtPercentRight($event)">Open draggable at right: 50% top: 50%</a>
+<a href="#" ng-click="openDraggableResizableAtPercentRight($event)">Open draggable, resizable at
+    right: 5%
+    top: 5%</a>
 <a href="#" ng-click="openDraggableTooltip($event)">Open draggable tooltip</a>
 <a href="" ng-click="openDefault($event)">Default theme</a>
 <a href="" ng-click="openDefaultWithoutAnimation()">Default theme without animation</a>
@@ -283,13 +292,13 @@
 
         $scope.openResizable = function (event) {
             ngDialog.open({
-                template  : 'myTooltip',
-                controller: 'InsideCtrl',
-                className : 'ngdialog-theme-default',
-                mouseEvent: event,
-                overlay   : false,
-                resizable : true,
-                draggable: true,
+                template      : 'myTooltip',
+                controller    : 'InsideCtrl',
+                className     : 'ngdialog-theme-default',
+                mouseEvent    : event,
+                overlay       : false,
+                resizable     : true,
+                draggable     : true,
                 showMinimize  : true,
                 minimizedTitle: 'Test title'
             });
@@ -297,16 +306,16 @@
 
         $scope.openResizableAsTooltip = function (event) {
             ngDialog.open({
-                template  : 'myTooltip',
-                controller: 'InsideCtrl',
-                className : 'ngdialog-theme-default',
-                overlay   : false,
-                resizable : true,
-                draggable: true,
+                template      : 'myTooltip',
+                controller    : 'InsideCtrl',
+                className     : 'ngdialog-theme-default',
+                overlay       : false,
+                resizable     : true,
+                draggable     : true,
                 showMinimize  : true,
                 minimizedTitle: 'Test title',
-                tooltip   : true,
-                mouseEvent: event,
+                tooltip       : true,
+                mouseEvent    : event,
             });
         };
 
@@ -331,6 +340,73 @@
                 draggable : true,
                 top       : "100",
                 left      : "100"
+            });
+        };
+
+        $scope.openDraggableAtCoordLeftTrumpRight = function (event) {
+            ngDialog.open({
+                template  : 'myTooltip',
+                controller: 'InsideCtrl',
+                className : 'ngdialog-theme-default',
+                mouseEvent: event,
+                overlay   : false,
+                draggable : true,
+                top       : "100",
+                left      : "100",
+                right     : "100"
+            });
+        };
+
+        $scope.openDraggableAtCoordRight = function (event) {
+            ngDialog.open({
+                template  : 'myTooltip',
+                controller: 'InsideCtrl',
+                className : 'ngdialog-theme-default',
+                mouseEvent: event,
+                overlay   : false,
+                draggable : true,
+                top       : "100",
+                right     : "100"
+            });
+        };
+
+        $scope.openDraggableAtPixelRight = function (event) {
+            ngDialog.open({
+                template  : 'myTooltip',
+                controller: 'InsideCtrl',
+                className : 'ngdialog-theme-default',
+                mouseEvent: event,
+                overlay   : false,
+                draggable : true,
+                top       : "100px",
+                right     : "100px"
+            });
+        };
+
+        $scope.openDraggableAtPercentRight = function (event) {
+            ngDialog.open({
+                template  : 'myTooltip',
+                controller: 'InsideCtrl',
+                className : 'ngdialog-theme-default',
+                mouseEvent: event,
+                overlay   : false,
+                draggable : true,
+                top       : "50%",
+                right     : "50%"
+            });
+        };
+
+        $scope.openDraggableResizableAtPercentRight = function (event) {
+            ngDialog.open({
+                template  : 'myTooltip',
+                controller: 'InsideCtrl',
+                className : 'ngdialog-theme-default',
+                mouseEvent: event,
+                overlay   : false,
+                draggable : true,
+                resizable : true,
+                top       : "5%",
+                right     : "5%"
             });
         };
 

@@ -40,6 +40,17 @@
     var keydownIsBound           = false;
     var openOnePerName           = false;
 
+    function getCssPositionValue(value, defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+
+        if (isNaN(value)) { // Assuming 10px or 10%
+            return value;
+        } else {
+            return parseInt(value, 10) + 'px';
+        }
+    };
 
     m.provider('ngDialog', function () {
         var defaults = this.defaults = {
@@ -71,7 +82,8 @@
             showMinimize           : false,
             minimizedTitle         : 'none titled',
             top                    : null,
-            bottom                 : null,
+            left                   : null,
+            right                  : null,
             resizable              : false
         };
 
@@ -600,8 +612,9 @@
                          * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
                          * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
                          * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled), default false
-                         * - top {Number|String} - Starting top position of dialog relative to browser window; may be String ('10px') or Number (10)
-                         * - left {Number|String} - Starting left position of dialog relative to browser window; may be String ('10px') or Number (10)
+                         * - top {Number|String} - Starting top position of dialog relative to browser window; may be String ('10px') or Number (10) or Percent ('10%')
+                         * - right {Number|String} - Starting right position of dialog relative to browser window; may be String ('10px') or Number (10) or Percent ('10%'); if left set as well, will default to left position
+                         * - left {Number|String} - Starting left position of dialog relative to browser window; may be String ('10px') or Number (10) or Percent ('10%')
                          * @return {Object} dialog
                          */
                         open: function (opts) {
@@ -690,7 +703,7 @@
 
                                     // If dragging, Add the Header HTML
                                     html += options.draggable ? '<div' +
-                                    ' class="ngdialog-header"></div>' : '';
+                                        ' class="ngdialog-header"></div>' : '';
 
                                     // Add the content template
                                     html += template + '</div>';
@@ -879,7 +892,7 @@
                                         $dialog.bind('click', closeByDocumentHandler);
                                     }
 
-                                    if (options.left || options.top) {
+                                    if (options.left || options.top || options.right) {
                                         var elDialogContent = $el($dialog[0].querySelector(
                                             '.ngdialog-content'));
                                         if (elDialogContent !== null) {
@@ -888,10 +901,13 @@
                                             };
 
                                             if (options.left !== null) {
-                                                position.left = options.left + 'px';
+                                                position.left = getCssPositionValue(options.left);
+                                            } else if (options.right !== null) {
+                                                position.right = getCssPositionValue(options.right);
                                             }
+
                                             if (options.top !== null) {
-                                                position.top = options.top + 'px';
+                                                position.top = getCssPositionValue(options.top);
                                             }
 
                                             elDialogContent.css(position);
@@ -904,6 +920,7 @@
                                         if (elDialogContent !== null) {
                                             //set new position for the ngDialog (tooltip)
                                             elDialogContent.css({
+                                                right   : '',
                                                 top     : options.mouseEvent.pageY + 'px',
                                                 left    : options.mouseEvent.pageX + 'px',
                                                 position: 'absolute'
@@ -930,6 +947,7 @@
 
                                                     if (!options.tooltip) {
                                                         elDialogContent.css({
+                                                            right: '',
                                                             top     : dialogClientRect.top + 'px',
                                                             left    : dialogClientRect.left + 'px',
                                                             position: 'absolute'
@@ -961,6 +979,7 @@
                                                             x = 0;
 
                                                         elDialogContent.css({
+                                                            right: '',
                                                             top : y + 'px',
                                                             left: x + 'px'
                                                         });
@@ -997,6 +1016,7 @@
 
                                                     if (!options.tooltip) {
                                                         elDialogContent.css({
+                                                            right: '',
                                                             top     : dialogClientRect.top + 'px',
                                                             left    : dialogClientRect.left + 'px',
                                                             position: 'absolute'
@@ -1019,7 +1039,7 @@
                                                         if (resizeDirection.indexOf('s') !== -1) {
                                                             newDimensions.height = mouseY - y + 'px';
                                                         } else if (resizeDirection.indexOf('n') !== -1) {
-                                                            var height = (y - mouseY) + dialogHeight;
+                                                            var height           = (y - mouseY) + dialogHeight;
                                                             newDimensions.height = height + 'px';
 
                                                             if (y + dialogHeight - mouseY > 36) {
@@ -1266,7 +1286,7 @@
                             return defaults;
                         }
                     }
-                    ;
+                ;
 
                 angular.forEach(
                     ['html', 'body'],
@@ -1322,10 +1342,9 @@
                         mouseEvent      : attrs.ngDialogTooltip === 'false' ? null : e,
                         showMinimized   : attrs.ngDialogShowMinimized === 'false' ? false : (attrs.ngDialogShowMinimized === 'true' ? true : defaults.showMinimized),
                         minimizedTitle  : attrs.ngDialogMinimizedTitle || defaults.minimizedTitle,
-                        top             : attrs.ngDialogTop ? parseInt(attrs.ngDialogTop,
-                            10) : defaults.top,
-                        left            : attrs.ngDialogLeft ? parseInt(attrs.ngDialogLeft,
-                            10) : defaults.bottom,
+                        top             : getCssPositionValue(attrs.ngDialogTop, defaults.top),
+                        left            : getCssPositionValue(attrs.ngDialogLeft, defaults.left),
+                        right           : getCssPositionValue(attrs.ngDialogRight, defaults.right),
                         resizable       : attrs.ngDialogResizable === 'false' ? false : (attrs.ngDialogResizable === 'true' ? true : defaults.resizable)
                     });
                 });
