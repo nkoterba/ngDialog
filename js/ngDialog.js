@@ -81,6 +81,7 @@
             mouseEvent             : null,
             showMinimize           : false,
             minimizedTitle         : 'none titled',
+            onMinimizedCallback     : null,
             top                    : null,
             left                   : null,
             right                  : null,
@@ -608,6 +609,7 @@
                          * - closeByEscape {Boolean} - default true
                          * - closeByDocument {Boolean} - default true
                          * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set)
+                         * - onMinimizedCallback {Function} - user supplied function called when dialog is minimized
                          * - bodyClassName {String} - class added to body at open dialog
                          * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
                          * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
@@ -781,6 +783,13 @@
                                         }
                                     }
 
+                                    if (options.onMinimizedCallback) {
+                                        if (angular.isFunction(options.onMinimizedCallback)) {
+                                            $dialog.data('$ngDialogOnMinimizedCallback',
+                                                options.onMinimizedCallback);
+                                        }
+                                    }
+
                                     scope.closeThisDialog = function (value) {
                                         privateMethods.closeDialog($dialog, value);
                                     };
@@ -947,7 +956,7 @@
 
                                                     if (!options.tooltip) {
                                                         elDialogContent.css({
-                                                            right: '',
+                                                            right   : '',
                                                             top     : dialogClientRect.top + 'px',
                                                             left    : dialogClientRect.left + 'px',
                                                             position: 'absolute'
@@ -980,8 +989,8 @@
 
                                                         elDialogContent.css({
                                                             right: '',
-                                                            top : y + 'px',
-                                                            left: x + 'px'
+                                                            top  : y + 'px',
+                                                            left : x + 'px'
                                                         });
                                                         window.getSelection().removeAllRanges();
                                                     };
@@ -1016,7 +1025,7 @@
 
                                                     if (!options.tooltip) {
                                                         elDialogContent.css({
-                                                            right: '',
+                                                            right   : '',
                                                             top     : dialogClientRect.top + 'px',
                                                             left    : dialogClientRect.left + 'px',
                                                             position: 'absolute'
@@ -1234,6 +1243,7 @@
                         minimize: function (id, minimizedTitle) {
                             if (!privateMethods.isMoreMinimizedElementsPossible())
                                 return;
+
                             var dialogElement = document.getElementById(id);
                             var $dialog       = $el(dialogElement);
                             var minimizedId   = id + '-minimized';
@@ -1274,6 +1284,12 @@
                             minimizedElement.append(closeButton);
                             $elements.body.append(minimizedElement);
                             privateMethods.rearrangeMinimizedElements();
+
+                            var onMinimizedCallback = $dialog.data('$ngDialogOnMinimizedCallback');
+
+                            if (onMinimizedCallback && angular.isFunction(onMinimizedCallback)) {
+                                onMinimizedCallback.call($dialog, minimizedElement);
+                            }
                         }
                         ,
 
@@ -1342,6 +1358,7 @@
                         mouseEvent      : attrs.ngDialogTooltip === 'false' ? null : e,
                         showMinimized   : attrs.ngDialogShowMinimized === 'false' ? false : (attrs.ngDialogShowMinimized === 'true' ? true : defaults.showMinimized),
                         minimizedTitle  : attrs.ngDialogMinimizedTitle || defaults.minimizedTitle,
+                        onMinimizedCallback: attrs.ngDialogOnMinimizedCallback || defaults.onMinimizedCallback,
                         top             : getCssPositionValue(attrs.ngDialogTop, defaults.top),
                         left            : getCssPositionValue(attrs.ngDialogLeft, defaults.left),
                         right           : getCssPositionValue(attrs.ngDialogRight, defaults.right),

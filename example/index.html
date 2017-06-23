@@ -96,9 +96,10 @@
 <a href="" ng-click="openConfirmWithPreCloseCallbackInlinedWithNestedConfirm()">Open confirm modal
     with pre-close inlined with nested confirm.</a>
 <a href="" ng-click="openWithoutOverlay()">Open without overlay</a>
-<a id="via-service" href="" ng-click="openWithMinifying()">Open with minifying</a>
-<a id="via-service" href="" ng-click="openWithMinifyingAndDraggable()">Open with minifying and
+<a href="" ng-click="openWithMinifying()">Open with minifying</a>
+<a href="" ng-click="openWithMinifyingAndDraggable()">Open with minifying and
     draggable</a>
+<a href="" ng-click="openWithMinifyingCallback()">Open with minifying callback</a>
 <a href="" ng-click="openWithJSSpecificWidth()" id="js-width">Open with js specific width</a>
 
 <!-- Templates -->
@@ -648,6 +649,22 @@
                 showMinimize  : true,
                 overlay       : false,
                 minimizedTitle: 'Test title'
+            });
+        };
+
+        $scope.openWithMinifyingCallback = function () {
+            var new_dialog = ngDialog.open({
+                id            : 'fromAService',
+                template      : 'firstDialogId',
+                controller    : 'InsideCtrl',
+                data          : {foo: 'from a service'},
+                draggable     : true,
+                showMinimize  : true,
+                overlay       : false,
+                minimizedTitle: 'Test title',
+                onMinimizedCallback: function(minimizedElement) {
+                	alert('On minimize callback: ' + minimizedElement);
+                }
             });
         };
 
